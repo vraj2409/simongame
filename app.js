@@ -5,22 +5,22 @@ let highscore=0;
 let started = false;
 let level = 0;
 let h2 = document.getElementById("result");
-let h2forhighscore=document.getElementById("highscore")
+let h2forhighscore=document.getElementById("highscore");
+const buttons = document.querySelectorAll('.btn');
 
 document.getElementById('start').addEventListener("click",function(){
     if(started == false){
         console.log("game started");
         started = true;
         levelup();
+        document.getElementById('start').style.visibility="hidden";
     }
 });
 function gameflash(btn) {
+    btn.classList.add('flash');
     setTimeout(() => {
-        btn.classList.add('flash');
-        setTimeout(() => {
-            btn.classList.remove('flash');
-        }, 900); 
-    }, 100);
+        btn.classList.remove('flash');
+    }, 900);
 }
 function userflash(btn){
     btn.classList.add('userflash');
@@ -41,20 +41,35 @@ function levelup(){
 }
 function checkAns(idx){
     if(userseq[idx] === gameseq[idx]){
+        let btn = document.querySelector(`.${userseq[idx]}`);
+        btn.classList.add('correct');
+        setTimeout(() => {
+            btn.classList.remove('correct');
+        }, 200);
         if(userseq.length == gameseq.length){
             setTimeout(levelup,750);
         }
     }
     else{
-        if(level>highscore){
-            highscore=level;
-        }
-        h2forhighscore.innerHTML=`Highest Score is ${highscore}`
-       h2.innerHTML = `Game Over! Your Score was <b>${level}</b> <br> Press start to restart.`;
+        let btn = document.querySelector(`.${userseq[idx]}`);
+        btn.classList.add('incorrect');
+        setTimeout(() => {
+            btn.classList.remove('incorrect');
+        }, 200);
+       if(level>highscore){
+           highscore=level;
+           if (level==1){
+            highscore=0;
+           }
+       }
+       h2forhighscore.innerHTML=`Highest Score is ${highscore}`
+       h2.innerHTML = `Game Over! Your Score was <b>${highscore}</b> <br> Press restart to start again.`;
        document.querySelector("body").style.background = "red";
        setTimeout(function(){
         document.querySelector("body").style.background = "white";
        },250);
+       document.getElementById('start').style.visibility="visible";
+       document.getElementById('start').textContent="Restart";
        reset();
     }
 }
